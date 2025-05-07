@@ -1,0 +1,45 @@
+# This starter workflow is for a CMake project running on a single platform. There is a different starter workflow if you need cross-platform coverage.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-multi-platform.yml
+name: CMake
+
+on:
+  push:
+    branches:
+      - '**'        # matches every branch
+
+env:
+  BUILD_TYPE: Release
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
+jobs:
+  latest-cpp:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Configure system
+      run: |
+          sudo apt-get -y update
+          sudo apt-get -y install libboost-dev
+          mkdir myusereph
+          mv * myusereph/
+          git clone -b stable https://github.com/lammps/lammps.git mylammps
+          mv myusereph/* mylammps/src
+          # git clone https://github.com/LLNL/USER-EPH.git
+          cd mylammps/src
+          # sed ... Makefile # Add user-eph at the end of `PACKAGE` variable
+          make yes-manybody yes-extra-fix yes-extra-dump yes-extra-compute yes-extra-command yes-python yes-openmp  # yes-user-eph
+          make mpi mode=shlib -j8
+          make install-python
+          export LD_LIBRARY_PATH=$HOME/mylammps/src:$LD_LIBRARY_PATH
+
+    - name: Configure CMake
+      run: # cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      run: # cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: # ctest -C ${{env.BUILD_TYPE}} --output-on-failure
