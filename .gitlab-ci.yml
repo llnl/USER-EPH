@@ -32,8 +32,19 @@ first-test-job:   # This job runs in the test stage.
   script:
     - echo "run first test"
 
-
 second-test-job:   # This job also runs in the test stage.
   stage: test    # It can run at the same time as unit-test-job (in parallel).
   script:
     - echo "run second test"
+
+artur_runner_test:
+  stage: build
+  allow_failure: true
+  tags: 
+    - linux
+    - debian
+    - g++
+    - artur
+  script:
+    - echo "testing runner"
+
