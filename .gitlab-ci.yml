@@ -16,6 +16,8 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
+image: amd64/debian:stable
+
 stages:          # List of stages for jobs, and their order of execution
   - build
   - test
