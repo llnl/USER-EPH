@@ -6,6 +6,10 @@ Artur Tamm (University of Tartu) \<artur.tamm@ut.ee\>
 Alfredo A. Correa (LLNL) \<correaa@llnl.gov\>
 
 ## Updates/News
+We have decided to rename the model as UTTM (unified two tempereture model) to reduce some confusion. 
+Previous name EPH might create an impression that this model is only useful for electron-phonon related simulations, which is not true. 
+Due to this rebranding was suggested by many colleagues and together we landed on UTTM.
+
 I am planning to refactor the code a bit, so that it would be easier to expand the capabilities of the code in the future. The old codebase will be saved under the tag legacy-2023-11-22.
 
 You can clone the legacy code with this command (you will see warnings about being in a detached state, but you can ignore them):
@@ -19,6 +23,7 @@ Some planned changes:
 * Rewrite the documentation
 * Create EPH parameterisations based on Leonid Zhigilei's data
 * Create EPH parameterisations based on Nikita Medvedev's data
+* Add cmake integration
 
 ## Introduction
 
@@ -31,36 +36,24 @@ The theory is developed in the papers "Langevin dynamics with spatial correlatio
 [[_TOC_]]
 
 ## Installation Instructions
+Here is a somewhat updated way to install UTTM (former USER-EPH) fix with LAMMPS
 
 First you need a version of LAMMPS (source code)
 ```
 $ mkdir mywork
 $ cd mywork
-$ git clone https://github.com/lammps/lammps.git
+$ git clone https://github.com/lammps/lammps.git lammps
 ```
-
-### Compile the USER-EPH fix for CPUs
- 
-Get USER-EPH (this plugin, you have to have access to the repository)
+## Download UTTM code (USER-EPH) and compile it with lammps
+Get USER-EPH
 ```
 $ cd lammps/src
-$ git clone https://github.com/LLNL/USER-EPH.git
+$ git clone https://github.com/LLNL/USER-EPH.git user-eph
 ```
 
-Edit LAMMPS' `Makefile` add the string ` user-eph ` to the `PACKUSER` variable (near line 68), for example:
-
-```Makefile
-PACKUSER = user-adios user-atc user-awpmd user-bocs user-cgdna user-cgsdk user-colvars \
-    ... 
-    user-sdpd user-sph user-tally user-uef user-vtk user-yaff \
-    user-eph
-```
-
-Edit `MAKE/Makefile.mpi` and `MAKE/Makefile.serial` and add `-std=c++11` to the `CCFLAGs` varialbe to read `CCFLAGS = -g -O3 -std=c++11` (near line 10).
-
-Execute:
+To add the fix into lammps
 ```bash
-$ make yes-manybody yes-user-eph
+$ make yes-user-eph
 $ make -j 8 serial
 ```
 
@@ -73,110 +66,6 @@ $ make -j 8 mpi
 ```
 
 The executables are `./lmp_mpi` (for parallel runs) `./lmp_serial` (for serial runs, testing), you can copy them elsewhere.
-
-### Compile for CUDA-enabled GPUs (optional)
-
-The code is ported to GPUs, a CUDA toolkit is required to compile this version and a CUDA card(s) supporting architecture *at least* 6.0 (`sm_60`, like
-[Pascal, Volta, Turing, etc](https://en.wikipedia.org/wiki/CUDA#GPUs_supported). 
-The command `nvidia-smi` will give you details.
-
-If not defined, set the CUDA environment variable (e.g. `/usr/local/cuda` or `/usr`)
-```bash
-$ echo $CUDA_HOME
-$ export CUDA_HOME=/usr/local/cuda 
-```
-
-Go back to the LAMMPS GPU library directory (`cd ../../lammps/lib/gpu`) and modify the file `Makefile.linux.double` add and activate your CUDA architecture and if needed `CUDA_HOME` and `CUDA_INCLUDE`. For example (after line 10),
-
-```Makefile
-...
-#CUDA_HOME = /usr/local/cuda
-NVCC = nvcc -ccbin=cuda-c++   ### or, for example -ccbin=mpicxx
-
-# Kepler CUDA
-#CUDA_ARCH = -arch=sm_35
-# Tesla CUDA
-# CUDA_ARCH = -arch=sm_21
-# newer CUDA
-#CUDA_ARCH = -arch=sm_13
-# older CUDA
-#CUDA_ARCH = -arch=sm_10 -DCUDA_PRE_THREE
-# Pascal (your architecture)
-CUDA_ARCH = -arch=sm_60
-...
-```
-
-and compile the library and return to the USER-EPH
-
-```bash
-$ make -f Makefile.linux.double
-```
-
-Go to the USER-EPH directory
-```bash
-$ cd ../../../lammps/src/USER-EPH/lib
-```
-
-Modify `Makefile` if needed (`CUDA_ARCH`, `CUDA_CODE`, `NVCCFLAGS`, `INCFLAGS`) and load necessary modules (e.g. `module load mpi/openmpi-x86_64`) buid
-
-```bash
-$ make
-```
-
-Go back to the source directory `lammps/src` and create a new file `MAKE/Makefile.mpi_gpu` 
-
-```bash
-$ cd ../..
-$ cp MAKE/Makefile.mpi MAKE/Makefile.mpi_gpu
-```
-
-Modify the `CCFLAGS` and `LIB` variables in the new `MAKE/Makefile.mpi_gpu` to read
-
-```Makefile
-...
-CCFLAGS =	-g -O3 -std=c++11 -DFIX_EPH_GPU
-...
-LIB = -L../USER-EPH/lib -leph_gpu -lcuda -lcudart
-...
-```
-
-```bash
-$ make yes-user-eph
-$ make yes-gpu
-$ make -j mpi_gpu
-```
-
-The GPU executable will be in `lmp_mpi_gpu`.
-
-The use the GPU accelerated potentials you enable the GPU package when running LAMMPS
-either by supplying it on the command line or through run scripts.
-
-```bash
-$ cd USER-EPH/Examples/Example_5
-$ lmp_mpi_gpu -pk gpu 1 -sf gpu -i run.lmp
-```
-
-or
-
-```
-# LAMMPS input file run.lmp
-package gpu 1
-...
-pair eam/alloy/gpu 
-...
-fix friction all eph/gpu
-...
-```
-The `-pk gpu 1` and `-sf gpu` flags allow the use of a single lammps run script where
-the last will try to substitute all fixes and pairs supporting gpu extension.
-
-See also Example-5 for a possible input script using the GPU version. 
-
-#### Note
-
-The current GPU version of the fix is not multi-device aware, so in order to utilise all GPUs on a node, 
-an equal number of tasks has to be used. Thus, `mpirun` has to be aware of gpus in order to assign correct GPUs 
-to each task. As a workaround, GPUs can be set into a special mode to block multiple tasks running on one GPU card.
 
 ## Usage
 
@@ -278,6 +167,8 @@ If you want to add your parametrisation with correct references, send a request 
 Examples can be found in `Examples/` directory. 
 To run them type `lmp_serial -i run.lmp` in the appropriate example directory and assuming executable is in `PATH`. 
 Some of the examples may take long on older machines, so tweak the input file (`run.lmp`) accordingly. Every example contains a `README` file that describes what the runscript does.
+You will need to be able to use EAM type potentials in order to run the tests. 
+Therefore, package manybody has to be installed as well.
 
 ## Example 1
 
@@ -390,6 +281,7 @@ This example is same as example 4 except the parameters for electronic heat capa
 - 2018/05/10 Initial Release
 - 2019/09/15 GPU port Release
 - 2019/10/29 Implemented C_e(T) and kappa_e(T) (breaking changes)
+- 2026/04/22 Updated the README a bit.
 
 ## TODO
 
@@ -404,3 +296,4 @@ USER-EPH is not part of the LAMMPS code https://github.com/lammps/lammps
 If you have any questions contact Artur Tamm <artur.tamm@ut.ee> or Alfredo Correa <correaa@llnl.gov>
 
 ``LLNL-CODE-750832``
+
