@@ -19,17 +19,19 @@ jobs:
 
     - name: Build
       run: |
-          sudo apt-get -y update
-          sudo apt-get -y install libboost-dev
-          mkdir user-eph
-          mv * user-eph/
-          git clone -b stable https://github.com/lammps/lammps.git lammps
-          mv user-eph/* lammps/src
-          cd mylammps/src
-          make no-all
-          make yes-manybody
-          make yes-user-eph
-          make -j 8 mpi
+          pwd
+          ls ./
+          # sudo apt-get -y update
+          # sudo apt-get -y install libboost-dev
+          # mkdir user-eph
+          # mv * user-eph/
+          # git clone -b stable https://github.com/lammps/lammps.git lammps
+          # mv user-eph/* lammps/src
+          # cd mylammps/src
+          # make no-all
+          # make yes-manybody
+          # make yes-user-eph
+          # make -j 8 mpi
 
     - name: Test
       working-directory: ${{github.workspace}}/build
