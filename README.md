@@ -89,8 +89,8 @@ Where:
 * `model`: select model for friction and random force [integer]
   * `1` -> standard Langevin (for vanilla TTM with beta(rho))
   * `2` -> simple e-ph model (https://link.aps.org/doi/10.1103/PhysRevB.94.024305) (not recommended)
-  * `3` -> e-ph with spatial correlations, with CM-correction only (https://arxiv.org/abs/1801.06610)
-  * `4` -> e-ph with spatial correlations, full model (https://arxiv.org/abs/1801.06610)
+  * `3` -> e-ph with spatial correlations, with CM-correction only ([https://dx.doi.org/10.1103/PhysRevLett.120.185501])
+  * `4` -> e-ph with spatial correlations, full model ([https://dx.doi.org/10.1103/PhysRevLett.120.185501])
 * `rho_e` -> scaling parameter for the FDM grid [float, recommended `1.0`] [unitless]
 * `C_e` -> electronic heat capacity per volume [float, e.g. `2.5e-6`] [in eV/K/Ang^3]
 * `kappa_e` -> electronic thermal conductivity [float,  ignored for single grid point] [in eV/K/Ang/ps]
