@@ -9,18 +9,27 @@ They all use the EPH model (meaning `model == 4`, which will be default in the f
 [[_TOC_]]
 
 ## H-W
-### Ponomareva (under review) 
-cite: E. Ponomareva, *et al*., [doi: 10.48550/arXiv.2603.10838](https://doi.org/10.48550/arXiv.2603.10838)
+### Ponomareva 2026 
+cite: E. Ponomareva, *et al*., [doi: 10.1016/j.jnucmat.2026.156906](https://doi.org/10.1016/j.jnucmat.2026.156906)
 file: [`H_W_Ponomareva2026.beta`](Data/H/H_W_Ponomareva2026.beta)
 comment: This parameterisation was developed for a H projectile travelling in W host.
 
 ## He
-cite: E. Ponomareva, *et al*., [doi: 10.48550/arXiv.2603.10838](https://doi.org/10.48550/arXiv.2603.10838)
+cite: E. Ponomareva, *et al*., [doi: 10.1016/j.jnucmat.2026.156906](https://doi.org/10.1016/j.jnucmat.2026.156906)
 file: [`He_W_Ponomareva2026.beta`](Data/He/He_W_Ponomareva2026.beta)
 comment: This parameterisation was developed for a He projectile travelling in W host.
 
+## C
+### Nunez-Palacio (under review)
+cite: R. Nunez-Palacio, *et al*., [doi: 10.21203/rs.3.rs-9471547/v1](https://doi.org/10.21203/rs.3.rs-9471547/v1)
+file: [`C_Nunez-Palacio2026.beta`](Data/C/C_Nunez-Palacio2026.beta)
+
 ## Ge 
 In development
+
+### Nunez-Palacio (under review)
+cite: R. Nunez-Palacio, *et al*., [doi: 10.21203/rs.3.rs-9471547/v1](https://doi.org/10.21203/rs.3.rs-9471547/v1)
+file: [`Ge_Nunez-Palacio2026.beta`](Data/Ge/Ge_Nunez-Palacio2026.beta)
 
 ## Ni
 ### Tamm 2018
@@ -37,6 +46,10 @@ file: [`Ni_PRB2019.beta`](Data/Ni/Ni_PRB2019.beta)
 cite: T. Jarrin, *et al*., Phys. Rev. B, 104, 195203 (2021). [doi: 10.1103/PhysRevB.104.195203](https://doi.org/10.1103/PhysRevB.104.195203)  
 file: [`Si_PRB2021_constant.beta`](Data/Si/Si_PRB2021_constant.beta)  
 file: [`Si_PRB2021_quadratic.beta`](Data/Si/Si_PRB2021_quadratic.beta)
+
+### Nunez-Palacio (under review)
+cite: R. Nunez-Palacio, *et al*., [doi: 10.21203/rs.3.rs-9471547/v1](https://doi.org/10.21203/rs.3.rs-9471547/v1)
+file: [`Si_Nunez-Palacio2026.beta`](Data/Si/Si_Nunez-Palacio2026.beta)
 
 ## W
 In development

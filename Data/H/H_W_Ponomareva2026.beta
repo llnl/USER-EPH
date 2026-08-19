@@ -1,4 +1,4 @@
-# H in W parameterization, E. Ponomareva 2026, https://arxiv.org/abs/2603.10838
+# H in W parameterization, E. Ponomareva 2026, https://doi.org/10.1016/j.jnucmat.2026.156906
 # Fitted to TDDFT Qball data for 0.3 auv H and 0.1 auv W. W in W is fitted to ch-<100>, offch-<100>, and vacancy. 
 # H in W is fitted to ch-<100>, ch-<110>, offch-<100>, vacancy, and is optimized to one random trajectory. 
 2 W H
